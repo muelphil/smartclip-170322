@@ -1,0 +1,21 @@
+<template>
+  <div class="wrapper icon-wrapper">
+    <svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" class="menu-dots"
+         style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+      <circle cx="33.333" cy="12.5" r="8.333"/>
+      <circle cx="33.333" cy="33.317" r="8.333"/>
+      <circle cx="33.333" cy="54.167" r="8.333"/>
+    </svg>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "ScMenu",
+  props: {checked: Boolean}
+};
+</script>
+
+<style scoped>
+
+</style>

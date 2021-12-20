@@ -1,0 +1,48 @@
+.options-group {
+
+  display:flex;
+  flex-direction: column;
+  flex: 1 1 0;
+
+  h4.title {
+    //text-align: center;
+    margin: 4px 0;
+  }
+
+  .options {
+    display:flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+
+    .option {
+      flex: 1 1 auto;
+      justify-content: center;
+      padding: 8px;
+      border: solid var(--background-color-lighter1);
+      background-color: var(--background-color-lighter2);
+      border-width: 1px 0 1px 1px;
+      cursor: pointer;
+      display: inline-flex;
+
+      input{
+        display:none;
+      }
+
+      &.checked {
+        background-color: var(--primary);
+        color: var(--textcolor-primary);
+        border-color: var(--primary-darker)
+      }
+
+      &:first-child {
+        border-radius: 4px 0 0 4px;
+      }
+
+      &:last-child {
+        border-radius: 0 4px 4px 0;
+      }
+    }
+  }
+
+
+}

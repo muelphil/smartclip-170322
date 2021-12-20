@@ -1,0 +1,1 @@
+bool DisableDwmAnimations(HWND hwnd);

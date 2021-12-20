@@ -1,0 +1,32 @@
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 4px;
+  background-color: var(--border-color2);
+  border-color: var(--border-color3);
+
+  .label {
+    font-size: 16px;
+    flex: 1 1 auto;
+  }
+
+  .checkbox-icon {
+    width: initial;
+    max-width: initial;
+    min-width: initial;
+    display: inline-block;
+    font-size: 24px;
+  }
+
+  &.checked .checkbox-icon {
+    //background-image: linear-gradient(to right, var(--primary), var(--primary) 10px, transparent 48px, transparent);
+    color: var(--primary)
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}

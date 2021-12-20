@@ -1,0 +1,40 @@
+.sc-button {
+  display: inline-block;
+  margin: 0;
+  padding: 5px 8px;
+
+  border-radius: 2px;
+  border: none;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  color: var(--textcolor-primary);
+  text-decoration: none;
+
+  outline: none;
+  cursor: pointer;
+
+  &:hover{
+    box-shadow: 0 3px 5px rgb(37, 37, 37);
+  }
+
+  &.primary {
+    background-color: var(--primary);
+  }
+
+  &.cancel {
+    background-color: var(--background-color-lighter2);
+  }
+
+  &:disabled {
+    background-color: var(--textcolor-secondary);
+    color: var(--background-color-lighter2);
+    cursor: not-allowed;
+  }
+}
+
+
+
+

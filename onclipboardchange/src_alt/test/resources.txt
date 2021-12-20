@@ -1,0 +1,10 @@
+[https://devblogs.microsoft.com/oldnewthing/20140203-00/?p=1893][How can I make a WNDPROC or DLGPROC a member of my C++ class?]
+[https://www.npmjs.com/package/ffi]
+[https://github.com/mika-fischer/napi-thread-safe-callback]
+[https://github.com/jhakonen/combileike/blob/master/clipboard_win32.py]
+
+[https://stackoverflow.com/questions/59460658/properly-using-addclipboardformatlistener-and-subscribing-to-wm-clipboardupdate]
+[https://medium.com/jspoint/a-simple-guide-to-load-c-c-code-into-node-js-javascript-applications-3fcccf54fd32#]
+
+
+

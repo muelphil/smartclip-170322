@@ -1,0 +1,8 @@
+a.link {
+  border-bottom: 2px solid var(--primary);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primary);
+  }
+}

@@ -1,0 +1,11 @@
+.empty-state {
+  height: 100%;
+  background-color: var(--background-color-lighter1);
+  color: var(--textcolor-secondary);
+
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+  border-radius: 2px;
+}
+

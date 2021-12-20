@@ -1,0 +1,7 @@
+.button-group {
+  display: inline-block;
+
+  .sc-button:not(:last-of-type) {
+    margin-right: 6px;
+  }
+}

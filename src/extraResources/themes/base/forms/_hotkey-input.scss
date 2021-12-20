@@ -1,0 +1,43 @@
+.obscurer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.4);
+  color: white;
+  //opacity: 40%;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.combination {
+  flex: 1 1 auto;
+}
+
+.combination-wrapper {
+  background-color: var(--border-color2);
+  border: 1px solid var(--border-color3);
+  color: var(--textcolor-primary);
+  display: flex;
+  padding: 10px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.new-hotkey {
+  flex: 1 1 auto;
+}
+
+.combination-input {
+  border-color: var(--primary);
+  z-index: 15;
+  position: relative;
+}
+
+.current-combination .combination {
+  flex: 1 1 auto;
+}

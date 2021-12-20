@@ -1,0 +1,27 @@
+.select-wrapper {
+  position: relative;
+
+  select {
+    appearance: none;
+    background-color: var(--border-color2);
+    border: 1px solid var(--border-color3);
+    color: var(--textcolor-primary);
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+
+    &:focus {
+      border-color: var(--primary);
+    }
+  }
+
+  .material-icons {
+    position: absolute;
+    font-size: 20px;
+    right: 10px;
+    top: 10px;
+    color: var(--textcolor-secondary);
+  }
+}

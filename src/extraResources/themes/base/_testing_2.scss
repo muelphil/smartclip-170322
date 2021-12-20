@@ -1,0 +1,52 @@
+.searchbar-container {
+  margin: 0 0 12px 0;
+  width: 100%;
+}
+
+input#searchbar {
+  font-size: larger;
+}
+
+.searchbar-container {
+  border-width: 2px;
+}
+
+.clipboard-container {
+  //background-color: white;
+}
+
+.plugin-view {
+  overflow: hidden;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+
+  background-color: var(--background-color);
+  //background-image: url("https://imgur.com/WEnnQAd.png");
+  //background-size: cover;
+
+  border-radius: 4px;
+}
+
+.settings {
+  background-color: var(--background-color);
+}
+
+.clipboard-entries-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.clipboard-entry-container {
+  margin: 0 !important;
+}
+
+.error-toast-container {
+  margin-top: 4px;
+  border-radius: 4px;
+}
+
+#app {
+  background-color: initial;
+}

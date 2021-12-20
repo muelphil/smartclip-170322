@@ -1,0 +1,21 @@
+.keyboard-button {
+  color: black;
+  background-color: #f7fffb;
+  padding: 2px 6px;
+  border-bottom: 3px solid #868c89;
+  border-right: 2px solid #868c89;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+
+.small {
+  .keyboard-button {
+    padding: 1px 3px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+  }
+}
+
+.shortcut{
+  padding: 0 2px;
+}

@@ -1,0 +1,1 @@
+// bool writeBuffers(Napi::Object buffers);

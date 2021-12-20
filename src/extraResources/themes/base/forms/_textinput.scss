@@ -1,0 +1,24 @@
+.input-wrapper {
+  display: flex;
+
+  input[type=text], input[type=number] {
+    background-color: var(--border-color2);
+    border: 1px solid var(--border-color3);
+    color: var(--textcolor-primary);
+    flex: 1 1 auto;
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;
+  }
+
+  &:focus {
+    border-color: var(--primary);
+  }
+}
+
+// hides up ^ and down v buttons for number inputs on the right side
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

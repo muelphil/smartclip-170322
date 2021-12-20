@@ -1,0 +1,30 @@
+html {
+  --primary: #b7465e;
+  --primary-darker: #882d42;
+
+  --textcolor-primary: #262626;
+  --textcolor-secondary: #999999;
+  --textcolor-tertiary: #bfbfbf;
+
+  --background-color-lighter2: #ffffff;
+  --background-color-lighter1p5: #e6e6e6;
+  --background-color-lighter1: #d9d9d9;
+  --background-color: #b3b3b3;
+  --background-color-darker1: #8c8c8c;
+  --background-color-darker2: #666666;
+
+  --scrollbar-track: #bfbfbf;
+  --scrollbar-thumb: #797979;
+  --scrollbar-thumb-hover: #646464;
+
+  --background-color-transparent: rgba(47, 49, 54, 0.7);
+
+  // TODO validate that these are necessary
+  --border-color2: var(--background-color-lighter1); //#303237;
+  --border-color3: #ffffff;
+
+  --error: #aa3939;
+  --error-background: #963b3b;
+  --error-background-rgb: 91, 27, 27;
+  --yellow: #cac511;
+}

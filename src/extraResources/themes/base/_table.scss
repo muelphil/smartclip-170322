@@ -1,0 +1,25 @@
+
+// BIG-todo
+.table-container {
+  background-color: var(--border-color2);
+  border: 1px solid var(--border-color3);
+  border-radius: 8px;
+  padding: 4px;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+      padding: 8px;
+    }
+
+    td:first-child {
+      text-align: right;
+    }
+
+    td:not(:last-of-type) {
+      border-right: solid 1px var(--border-color3);
+    }
+  }
+}

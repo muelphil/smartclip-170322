@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+}
+
+#app {
+  position: relative;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--textcolor-primary);
+  background-color: var(--background-color);
+}
+
+.app {
+  overflow-y: auto;
+}
