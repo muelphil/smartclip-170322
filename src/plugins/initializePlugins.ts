@@ -1,5 +1,6 @@
 import { ref } from '@vue/reactivity';
-import { basePlugin, Plugin, prefixPlugins } from '@/plugins/plugins'; // TODO try to make the following code independent of these imports
+import { basePlugin, prefixPlugins } from '@/plugins/plugins'; // TODO try to make the following code independent of these imports
+import {Plugin} from '@/plugins/types';
 
 function initializePlugins() {
     const query = ref('');
@@ -15,7 +16,8 @@ function initializePlugins() {
                 const potentialPluginId = inputElement.value.trim();
                 console.debug(`checking for plugin with name "${potentialPluginId}"`);
                 if ( potentialPluginId.indexOf(' ') === -1 ) {
-                    const foundPlugin: Plugin | undefined = prefixPlugins.find(e => e.id === potentialPluginId);
+                    console.log('prefixPlugins=', prefixPlugins.value);
+                    const foundPlugin: Plugin | undefined = prefixPlugins.value.find(e => e.id === potentialPluginId);
                     if ( foundPlugin ) {
                         console.debug(`Plugin ${potentialPluginId} will be deployed, basePlugin will be concealed`);
                         event.preventDefault();

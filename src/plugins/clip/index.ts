@@ -1,7 +1,7 @@
 import { settingsPrototype as clipSettings } from '@/plugins/clip/settings';
 import ClipView from '@/plugins/clip/ClipView.vue';
 import ClipResults from '@/plugins/clip/ClipResults.vue';
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 import { actions } from '@/plugins/clip/actions';
 
 export const clip: Plugin = {

@@ -15,6 +15,7 @@ export class GlobalService {
     public codeBackgroundColor: string;
     public codeColor: string;
     public contextMenu: ContextMenu<any>;
+    public appWidth: number = 0;
 
     private constructor() {
         getComputedProperty('pre', 'hljs', (props) => {

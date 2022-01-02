@@ -57,7 +57,7 @@ onClipboardChangeModule.startListeningForCopy(() => {
     // if ( !ignore ) {
     //     ignore = true;
     //     setTimeout(() => ignore = false, 20);
-    console.log('onClipboardChangeModule.startListeningForCopy::start');
+    console.debug('[Clipboard Extended] onClipboardChangeModule.startListeningForCopy::start');
     if (protectedCopy) {
         protectedCopy = false;
         return;
@@ -69,13 +69,13 @@ onClipboardChangeModule.startListeningForCopy(() => {
             lastText = text;
             clipboardEmitter.emit('copy', format);
         } else {
-            console.warn('Clipboard change event ignored due to no change in the clipboard data (same thing copied twice)');
+            console.warn('[Clipboard Extended] Clipboard change event ignored due to no change in the clipboard data (same thing copied twice)');
         }
     } else {
         lastText = null;
         clipboardEmitter.emit('copy', format);
     }
-    console.log('onClipboardChangeModule.startListeningForCopy::end');
+    console.debug('[Clipboard Extended] onClipboardChangeModule.startListeningForCopy::end');
     // }
     // clipboardEmitter.emit('everyCopy'); // todo for pl that want to react every copy no matter if they are the same
 });

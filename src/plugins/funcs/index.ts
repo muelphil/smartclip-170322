@@ -1,4 +1,4 @@
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 import FuncsView from '@/plugins/funcs/FuncsView.vue';
 import FuncsService from '@/plugins/funcs/FuncsService';
 

@@ -1,5 +1,6 @@
 <template>
   <div v-if="property.type !== 'hidden'">
+    v-model=[{{modelValue}}]
     <component
         :is="componentType"
         :modelValue="modelValue"
@@ -17,6 +18,7 @@ import ScRadioGroup from '@/components/form/ScRadioGroup.vue';
 import ScSelect from '@/components/form/ScSelect.vue';
 import ScTextInput from '@/components/form/ScTextInput.vue';
 import ScHotkey from '@/components/form/ScHotkey.vue';
+import ScFilesInput from '@/components/form/ScFilesInput.vue';
 
 const mapping = {
   boolean: 'ScCheckbox',
@@ -24,12 +26,13 @@ const mapping = {
   string: 'ScTextInput',
   radio: 'ScRadioGroup',
   hotkey: 'ScHotkey',
-  hidden: null
+  files: 'ScFilesInput',
+  hidden: null,
 }
 
 export default defineComponent({
   name: 'SettingProperty',
-  components: {ScCheckbox, ScSelect, ScTextInput, ScHotkey, ScRadioGroup},
+  components: {ScCheckbox, ScSelect, ScTextInput, ScHotkey, ScRadioGroup, ScFilesInput},
   props: {
     property: {required: true, type: Object},
     modelValue: {required: true}

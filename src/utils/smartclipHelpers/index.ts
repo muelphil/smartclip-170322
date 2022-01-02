@@ -81,7 +81,6 @@ const setApplicationHotkeyListeners = [];
 // todo this does not work when changing - unregistering required in this case! (see settings hotkey keycomb)
 // see https://www.electronjs.org/docs/api/global-shortcut#globalshortcutunregisteraccelerator
 function setApplicationHotkey(hotkey: string[]) {
-    console.log('setApplicationHotkey called!');
     let hotkeyFormatted = hotkey
         .join('+')
         .replace(/Ctrl/g, 'CommandOrControl')
@@ -93,7 +92,7 @@ function setApplicationHotkey(hotkey: string[]) {
         setApplicationHotkeyListeners.forEach(listener => listener());
     });
     if ( success ) {
-        console.info(`[Initialization] Successfully registered global shortcut "${hotkeyFormatted}" for opening smartclip`);
+        console.debug(`[Initialization] Successfully registered global shortcut "${hotkeyFormatted}" for opening smartclip`);
     } else {
         global.logger.error({
             originator:'::setApplicationHotkey',

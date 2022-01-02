@@ -11,16 +11,16 @@
       </div>
     </div>
 
-    <div v-for="service in plugins" class="setting-section">
-      <template v-if="'settingsPrototype' in service">
-        <div class="header"> {{ service.prefixDisplay }} settings</div>
-        <div v-for="property in service.settingsPrototype">
+    <div v-for="plugin in plugins" class="setting-section">
+      <template v-if="'settingsPrototype' in plugin">
+        <div class="header"> {{ plugin.prefixDisplay }} settings</div>
+        <div v-for="property in plugin.settingsPrototype">
           <setting-property
               :property="property"
-              :model-value="settings[service.id][property.identifier]"
-              @update:modelValue="setSetting(service.id, property.identifier, $event)"
+              :model-value="settings[plugin.id][property.identifier]"
+              @update:modelValue="setSetting(plugin.id, property.identifier, $event)"
           ></setting-property>
-<!--          v-model=[{{ settings[service.id][property.identifier] }}]-->
+          v-model[pref]=[{{ settings[plugin.id][property.identifier] }}]
         </div>
       </template>
     </div>
@@ -66,13 +66,15 @@ export default defineComponent({
   props: ['baseSettingsPrototype', 'settings', 'plugins'],
   setup(props) {
     function setSetting(plugin: string, identifier: string, value) {
-      settings[plugin][identifier] = value;
+      console.log('[SettingsPreferences] value pre change=', settings[plugin][identifier])
+      console.debug(`[SettingsPreferences] Attempting to set setting - ${plugin}.${identifier} = ${value}`);
+      props.settings[plugin][identifier] = value;
+      console.log('[SettingsPreferences] value post change=', settings[plugin][identifier])
       ipcRenderer.sendTo((window as any).toolWindowId, 'set-setting', {
         plugin,
         identifier,
         value: JSON.parse(JSON.stringify(value))
       });
-      console.log(`attempting to set setting - ${plugin}.${identifier} = ${value}`);
     }
 
     function openDevTools(): void {

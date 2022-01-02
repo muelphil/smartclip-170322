@@ -1,5 +1,5 @@
 import LeoView from '@/plugins/leo/LeoView.vue';
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 
 export const leo: Plugin = {
     id: 'leo',

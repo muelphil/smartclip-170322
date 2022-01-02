@@ -52,7 +52,7 @@ export default defineComponent({
   created() {
     registerApplicationHotkeyListener((this.focus).bind(this));
     ipcRenderer.on('focus-searchbar', (event) => {
-      console.log('[Events] focus-searchbar');
+      console.debug('[Events] focus-searchbar');
       this.focus();
     });
   },

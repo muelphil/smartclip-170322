@@ -2,7 +2,7 @@ let isFunction = function (obj) { // TODO hat hier nix zu suchen
     return typeof obj == 'function' || false;
 };
 
-type ScEvent = 'arrow' | 'submit' | 'esc' | 'alt-start' | 'alt-stop' | 'alt-select' | 'tab'
+type ScEvent = 'arrow' | 'submit' | 'esc' | 'alt-start' | 'alt-stop' | 'alt-select' | 'tab';
 type PropagateOption = 'all' | 'none' | 'non-covered'
 
 export default class SCEventEmitter {
@@ -15,12 +15,12 @@ export default class SCEventEmitter {
     }
 
     removeListener(id: number) {
-        if ( id !== this.listeners.length - 1 )
+        if (id !== this.listeners.length - 1)
             throw 'tried to remove listener that is not at the top of the stack';
         this.listeners.splice(id, 1);
     }
 
-    setListeners(listeners: { [key: string]: Function }, propagate: PropagateOption = 'all'): number {
+    setListeners(listeners: { [key in ScEvent]?: Function }, propagate: PropagateOption = 'all'): number {
         const id = this.listeners.length;
         this.listeners.push({propagate, listeners});
         return id;
@@ -44,12 +44,12 @@ export default class SCEventEmitter {
             const labelListener = this.listeners[index];
             const listener = labelListener.listeners[eventName];
             const propagate = labelListener.propagate;
-            if ( listener ) {
+            if (listener) {
                 listeners.push(listener);
-                if ( propagate === 'non-covered' )
+                if (propagate === 'non-covered')
                     break;
             }
-            if ( propagate === 'none' ) {
+            if (propagate === 'none') {
                 break;
             }
         }
@@ -57,7 +57,7 @@ export default class SCEventEmitter {
     }
 
     emit(label: ScEvent, event: Event, ...args) {
-        if ( !window.services.global.loading ) {
+        if (!window.services.global.loading) {
             let listeners = this.buildListeners(label);
             for (let listener of listeners) {
                 listener(event, ...args);

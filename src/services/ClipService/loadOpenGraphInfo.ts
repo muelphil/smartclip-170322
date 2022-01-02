@@ -1,5 +1,6 @@
 // const request = require('got');
-const got = require('got');
+// const got = require('got');
+
 const ogs = require('open-graph-scraper');
 const {URL} = require('url');
 
@@ -7,7 +8,7 @@ function findIcon(str: string, requestUrl: string) {
     let relIconIndex = str.indexOf('rel="icon"')
         || str.indexOf('rel="apple-touch-icon"')
         || str.indexOf('/apple-touch-icon.png"');
-    if ( relIconIndex === -1 ) {
+    if (relIconIndex === -1) {
         console.warn('couldn\'t find a icon href');
         return null;
     }
@@ -22,7 +23,7 @@ function lastIndexOfChar(str: string, character: string, startAt: number) {
     let charCode = character.charCodeAt(0);
     let index: number = startAt;
     while (index >= 0) {
-        if ( str.charCodeAt(index) === charCode )
+        if (str.charCodeAt(index) === charCode)
             return index;
         index--;
     }
@@ -32,12 +33,13 @@ function lastIndexOfChar(str: string, character: string, startAt: number) {
 export async function loadOGInfo(url): Promise<object> {
     const options = {url};
     const {result, response} = await ogs(options);
-    const bodyPeek = response.rawBody.subarray(0, 8192).toString();
+    console.log('result=', result, 'response=', response)
+    const bodyPeek = response.rawBody.substr(0, 8192).toString();
     result.iconUrl = findIcon(bodyPeek, url);
-    if ( !result.iconUrl ) {
+    if (!result.iconUrl) {
         const origin = new URL(url).origin;
-        const {body} = await got(origin);
-        result.iconUrl = findIcon(body.substr(0, 8192), origin);
+        const {html} = await global.requestPageSource(origin); // TODO
+        result.iconUrl = findIcon(html.substr(0, 8192), origin);
     }
     return result;
 }

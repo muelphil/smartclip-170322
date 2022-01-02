@@ -22,7 +22,7 @@ export default defineComponent({
     entry: Object // MathEntry
   },
   setup(props) {
-    console.log('MathEntryView::setup', props.entry)
+    console.debug('[MathEntryView]::setup', props.entry)
     const isInvalid = computed({
       get() {
         return props.entry.cache.isInvalid;
@@ -37,13 +37,13 @@ export default defineComponent({
     const method = props.entry.data.preferredPreview || 'mathjax';
 
     onMounted(async function () {
-      console.log('MathEntryView::onMounted, entry=', props.entry)
+      console.debug('[MathEntryView]::onMounted, entry=', props.entry)
       if (!isInvalid.value) {
         if (method === 'mathjax') {
           if (props.entry.cache.previewSvg) {
             preview.value.appendChild(props.entry.cache.previewSvg);
           } else {
-            console.warn('math was not cached, need to build svg');
+            console.warn('[MathEntryView] math was not cached, need to build svg');
             try {
               const svgNode = await window.services.math.renderMathJaxToSvg(props.entry.plainText, 'tex');
               props.entry.cache.previewSvg = svgNode;

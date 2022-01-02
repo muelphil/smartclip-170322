@@ -5,7 +5,6 @@ import {ipcRenderer} from 'electron';
 import {createApp} from 'vue';
 
 const href = window.location.href;
-console.log('url=', href);
 
 if (href.endsWith('#settings')) {
     import('@/settings-window/SettingsApp.vue').then(SettingsApp => {
@@ -15,13 +14,11 @@ if (href.endsWith('#settings')) {
 } else {
     require('@/initialize');
     require("@/plugins/settings");
-    const allPlugins = require('@/plugins/plugins').allPlugins;
+    const plugins = require('@/plugins/plugins').plugins;
+    global.plugins = plugins;
     const baseSettingsPrototype = require('@/plugins/basicSettings').baseSettingsPrototype;
 
     ipcRenderer.on('get-settings', (event) => {
-        console.log('settings requested');
-        console.dir(baseSettingsPrototype);
-
         function serializeSettingsPrototype(settingsPrototype) {
             return settingsPrototype.map(({type, identifier, description, label, defaultValue, options}) => ({
                 type, identifier, description, label, defaultValue, options
@@ -29,7 +26,7 @@ if (href.endsWith('#settings')) {
         }
 
         const serializedPlugins =
-            allPlugins.map(({id, prefixDisplay, description, settingsPrototype, name}) => {
+            plugins.map(({id, prefixDisplay, description, settingsPrototype, name}) => {
                 const result = {id, prefixDisplay, name, description};
                 if (settingsPrototype) result['settingsPrototype'] = serializeSettingsPrototype(settingsPrototype);
                 return result;
@@ -45,7 +42,7 @@ if (href.endsWith('#settings')) {
     })
 
     ipcRenderer.on('set-setting', (event, {plugin, identifier, value}) => {
-        console.log(`attempted to set setting - window.settings[${plugin}][${identifier}] = ${value}`);
+        console.debug(`[Settings Window] attempted to set setting - window.settings[${plugin}][${identifier}] = ${value}`);
         window.settings[plugin][identifier] = value;
     });
 
@@ -55,15 +52,8 @@ if (href.endsWith('#settings')) {
         const ScEmptyState = require('@/components/ScEmptyState.vue');
         const ScPaddedLoader = require('@/components/ScPaddedLoader.vue');
         const ScKeyCombination = require('@/components/ScKeyCombination.vue');
-        // console.log('App=')
-        // console.dir(App)
         const app = createApp(App.default as any);
-        allPlugins.forEach(plugin => {
-            const name = plugin.component.name;
-            const component = plugin.component;
-            app.component(name, component);
-        });
-        app.component('ScEmptyState', ScEmptyState);
+        app.component('ScEmptyState', ScEmptyState.default);
         app.component('ScLoader', ScLoader);
         app.component('ScPaddedLoader', ScPaddedLoader); //TODO padded loader?
         app.component('ScKeyCombination', ScKeyCombination);

@@ -1,26 +1,24 @@
 <template>
-  <div :style="{'max-height': maxHeight}" class="app">
-<!--    <context-menu v-if="contextMenu"></context-menu>-->
+<!--  <div :style="{'max-height': maxHeight}" class="app" ref="app">-->
+  <div class="app" ref="app">
     <div v-if="loading" class="obscurer">Loading!</div>
-    <keep-alive>
-      <MainView v-if="!settingsActive"></MainView>
-      <SettingsPanel v-else></SettingsPanel>
-    </keep-alive>
+    <!--    <keep-alive>-->
+    <MainView v-if="!settingsActive"></MainView>
+    <!--     TODO remove <SettingsPanel v-else></SettingsPanel>-->
+    <!--    </keep-alive>-->
     <error-notification-bar></error-notification-bar>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, toRef } from 'vue';
-import SettingsPanel from '@/components/settings/SettingsPanel.vue';
+import {computed, defineComponent, onMounted, ref, toRef} from 'vue';
 import MainView from '@/components/MainView.vue';
 import ContextMenu from '@/components/ContextMenu.vue';
-// import '../node_modules/material-design-icons-iconfont/dist/material-design-icons.css';
+import '../node_modules/material-design-icons-iconfont/dist/material-design-icons.css';
 import './extraResources/themes/base.scss';
-import { settings } from '@/plugins/settings';
+import {settings} from '@/plugins/settings';
 import ErrorNotificationBar from '@/components/ErrorNotificationBar.vue';
 import settingsManager from "electron-settings";
-import {ipcRenderer} from 'electron';
 // import './extraResources/themes/dracula.css';
 
 const remote = require('electron').remote;
@@ -29,18 +27,21 @@ const screen = remote.screen.getPrimaryDisplay().size;
 
 export default defineComponent({
   name: 'App',
-  components: {ErrorNotificationBar, MainView, SettingsPanel, ContextMenu},
+  components: {ErrorNotificationBar, MainView, ContextMenu},
   setup() {
 
     let loadedSettings = settingsManager.getSync('settings') || {};
-    console.log('loadedSettings in App.vue', loadedSettings);
+    console.debug('[Initialization] App.vue loadedSettings=', loadedSettings);
+    const app = ref(null);
 
     const maxHeight = computed(() => {
       return (screen.height * settings.base.maxScreenHeightPercentage / settings.base.zoom) + 'px';
     });
 
-    onMounted(()=>{
-      window.services.global.textcolorPrimary = getComputedStyle(document.documentElement).getPropertyValue('--textcolor-primary').trim()
+    onMounted(() => {
+      window.services.global.textcolorPrimary = getComputedStyle(document.documentElement).getPropertyValue('--textcolor-primary').trim();
+      window.services.global.appWidth = app.value.offsetWidth;
+      console.log('app container = ', app.value);
     });
 
     // const contextMenu = toRef(window.services.global, 'contextMenu');
@@ -77,6 +78,7 @@ export default defineComponent({
       settingsActive: toRef(window.services.global, 'settingsActive'),
       loading: toRef(window.services.global, 'loading'),
       maxHeight,
+      app
       // contextMenu
     };
   }

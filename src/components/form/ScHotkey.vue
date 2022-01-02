@@ -60,18 +60,15 @@ export default {
       this.hotkey = [];
       this.inputActive = true;
       await nextTick();
-      console.dir(this.$refs);
       this.$refs.input.focus();
     },
     onKeydown($event) {
-      console.dir($event);
       this.hotkey = this.toKeyArray($event);
     },
     cancelInput() {
       this.inputActive = false;
     },
     submitInput() {
-      console.dir('submitting hotkey=', this.hotkey);
       this.$emit('update:modelValue', this.hotkey);
       this.inputActive = false;
     },

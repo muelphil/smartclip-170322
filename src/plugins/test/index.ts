@@ -1,4 +1,4 @@
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 import TestView from '@/plugins/test/TestView.vue';
 import TestService from '@/plugins/test/TestService';
 import { settingsPrototype } from '@/plugins/test/settings';

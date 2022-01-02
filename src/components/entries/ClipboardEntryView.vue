@@ -80,9 +80,9 @@ export default defineComponent({
       return entry.constructor.name + 'View';
     }
 
-    onMounted(() => {
-      console.log('ClipboardEntryView::onMounted');
-    });
+    // onMounted(() => {
+    //   console.log('ClipboardEntryView::onMounted');
+    // });
 
     function remove() {
       // if ( this.entry.favourite ) {

@@ -13,7 +13,7 @@ const {promises: fs, existsSync} = require('fs');
 const path = require('path');
 const win = remote.getCurrentWindow();
 const robot = require('robotjs');
-
+//
 export class ClipService {
 
     paused = false;
@@ -147,6 +147,7 @@ export class ClipService {
         // win.blur();
         // win.blurWebView();
         robot.keyTap('v', process.platform === 'darwin' ? 'command' : 'control');
+        // keyboard.type(Key.LeftControl, Key.V);
     }
 
     pasteEntry(entry: ClipboardEntry): void { // TODO Type

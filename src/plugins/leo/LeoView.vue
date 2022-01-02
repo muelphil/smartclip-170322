@@ -53,7 +53,6 @@ export default defineComponent({
 
     watch(debounced, (query : string) => {
       query = query.trim();
-      console.dir(query);
       error.value = null;
       if ( query !== '' ) {
         loading.value = true;

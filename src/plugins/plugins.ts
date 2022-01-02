@@ -1,48 +1,23 @@
-import { clip } from '@/plugins/clip';
-import { leo } from '@/plugins/leo';
-import { echo } from '@/plugins/echo';
-import { AbstractSettingProperty } from '@/classes/SettingProperty';
-import { test } from '@/plugins/test';
-import { tex } from '@/plugins/unicodetex';
-import { EntryType } from '@/plugins/clip/EntryType';
-import { ClipboardEntry } from '@/classes/ClipboardEntry';
-import { math } from '@/plugins/math';
-import { funcs } from '@/plugins/funcs';
-import { start } from '@/plugins/start';
+import {clip} from '@/plugins/clip';
+import {leo} from '@/plugins/leo';
+import {echo} from '@/plugins/echo';
+import {test} from '@/plugins/test';
+import {tex} from '@/plugins/unicodetex'
+import {math} from '@/plugins/math';
+import {funcs} from '@/plugins/funcs';
+import {start} from '@/plugins/start';
+import {Plugin} from '@/plugins/types'
+import {createPluginSettings} from "@/plugins/settings";
+import {computed, shallowReactive} from "vue";
+import {getPluginCachePath} from "@/initialize/paths";
 
-export type Action = {
-    validator: EntryType | ((entry: ClipboardEntry) => boolean),
-    description: string | ((entry: ClipboardEntry) => string),
-    performAction: (entry, done: () => void) => void
-}
+global.pluginServices = {};
 
-export type ActionInstance = {
-    description: string,
-    performAction: (entry, done: () => void) => void
-}
+const basePlugin = start;
 
-export type Plugin = {
-    id: string,
-    component: any,
-    name: string,
-    prefixDisplay: string,
-    description: string,
-    settingsPrototype?: Array<AbstractSettingProperty>,
-    service?: { new(settings: object) },
-    actions?: Action[]
-}
+// const prefixPlugins: Plugin[] = [
 
-const basePlugin = clip;
-
-const prefixPlugins: Plugin[] = [
-    echo,
-    leo,
-    math,
-    test,
-    tex,
-    funcs,
-    start
-];
+// ];
 
 // fs.readdirSync(pluginsPath, 'utf-8')
 //     .filter(p => p.endsWith('.js'))
@@ -55,11 +30,25 @@ const prefixPlugins: Plugin[] = [
 // const myPlugin = __non_webpack_require__('C:\\Users\\Philip\\.smartclipdev\\plugins\\main.js');
 // prefixPlugins.push(myPlugin);
 
-const allPlugins: Plugin[] = [
-    ...prefixPlugins,
-    basePlugin
-];
+const plugins: Plugin[] = shallowReactive([]);
 
+function registerPlugin(plugin: Plugin) {
+    const pluginSettings = createPluginSettings(plugin);
+    if (plugin.service) {
+        console.log(`Plugin ${plugin.id} has service`)
+        const service = new plugin.service(pluginSettings, getPluginCachePath);
+        global.pluginServices[plugin.id] = service
+    }
+    plugins.push(plugin);
+}
+
+[clip, math, start,
+    echo,
+    leo,
+    test,
+    tex,
+    funcs,
+].forEach(registerPlugin);
 
 // TODO remove this after reviewing the component registration
 // setTimeout(() => {
@@ -69,9 +58,12 @@ const allPlugins: Plugin[] = [
 //     });
 // });
 
+const prefixPlugins = computed(() => {
+    return plugins.filter(p => p.id !== basePlugin.id);
+})
 
 export {
     prefixPlugins,
-    allPlugins,
+    plugins,
     basePlugin
 };

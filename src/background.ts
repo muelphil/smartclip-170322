@@ -1,15 +1,18 @@
 'use strict'
-
 import {app, BrowserWindow, globalShortcut, ipcMain, Menu, powerMonitor, protocol, screen, Tray} from 'electron';
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import {appendLineToLog} from '@/utils/appendLineToLog';
-import '@/initialize/paths2';
 import settingsManager from "electron-settings";
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
+import {dirname, join} from "path";
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const {BrowserWindow: AcrylicBrowserWindow} = require("electron-acrylic-window");
 app.allowRendererProcessReuse = false;
 const path = require('path');
+const appPath = dirname(app.getPath('exe'));
+const sourcePathDev = path.join(dirname(app.getPath('exe')).replace(/(node_modules).+$/, ''), 'src');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -36,9 +39,21 @@ async function createToolWindow() {
         x: x,
         y: y,
         maxHeight: maxHeight,
-        center: true,
-        webPreferences: {
 
+        show: false,
+        resizable: false,
+        movable: false,
+        skipTaskbar: true,
+        fullscreenable: false,
+        frame: false,
+        transparent: true,
+        backgroundColor: '#00000001',
+        alwaysOnTop: true,
+        center: true,
+
+        // vibrancy: 'dark',
+
+        webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
             nodeIntegration: (process.env
@@ -49,28 +64,27 @@ async function createToolWindow() {
             webSecurity: false,
             spellcheck: false,
             nativeWindowOpen: true,
-            preload: 'E:\\Programmierung\\v3\\smartclip\\src\\preload.js',
+            preload: path.join(sourcePathDev, 'preload.js'),
         },
         icon: iconPath
     };
 
-    const showTransparent = !isDevelopment;
-
-    if (showTransparent) {
+    if (isDevelopment) {
         options = Object.assign(options, {
-            show: false,
-            resizable: false,
-            movable: false,
-            skipTaskbar: true,
-            fullscreenable: false,
-            frame: false,
-            transparent: true,
-            backgroundColor: '#00000001',
-            alwaysOnTop: true,
+            resizable: true,
+            frame: true,
+            show: true,
+            movable: true,
+            skipTaskbar: false,
+            fullscreenable: true,
+            transparent: false,
+            alwaysOnTop: false,
         });
+        delete options.maxHeight;
+        delete options.backgroundColor;
     }
 
-    // Create the browser window.
+    // Create the tool window.
     toolWindow = new BrowserWindow(options);
 
     tray = new Tray(iconPath);
@@ -112,7 +126,7 @@ async function createToolWindow() {
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
         await toolWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
-        if (!showTransparent) toolWindow.webContents.openDevTools()
+        if (isDevelopment) toolWindow.webContents.openDevTools()
     } else {
         createProtocol('app')
         // Load the index.html when not in development
@@ -121,7 +135,7 @@ async function createToolWindow() {
 
     // TODO - Goal: minimize into the tray
     toolWindow.on('minimize', function (event: any) {
-        console.log('[Events] toolWindow::minimize')
+        console.debug('[Events] toolWindow::minimize')
         // if ( !isDevelopment ) {
         event.preventDefault();
         toolWindow!.hide();
@@ -129,7 +143,7 @@ async function createToolWindow() {
     });
 
     toolWindow.on('blur', function (_event: any) {
-        console.log('[Events] toolWindow::blur')
+        console.debug('[Events] toolWindow::blur')
         if (!isDevelopment && settingsWin === null)
             toolWindow!.hide();
     });
@@ -177,14 +191,14 @@ app.on('ready', async () => {
     const size = screen.getPrimaryDisplay().workAreaSize;
     screenWidth = size.width;
     screenHeight = size.height;
-    if (isDevelopment && !process.env.IS_TEST) {
-        // Install Vue Devtools
-        try {
-            await installExtension(VUEJS3_DEVTOOLS)
-        } catch (e) {
-            console.error('Vue Devtools failed to install:', e.toString())
-        }
-    }
+    // if (isDevelopment && !process.env.IS_TEST) {
+    //     // Install Vue Devtools
+    //     try {
+    //         await installExtension(VUEJS3_DEVTOOLS)
+    //     } catch (e) {
+    //         console.error('Vue Devtools failed to install:', e.toString())
+    //     }
+    // }
     createToolWindow();
 });
 
@@ -199,7 +213,7 @@ app.whenReady().then(() => {
 // ========================================================================================
 
 function createSettingsWindow() { // TODO settings arg entfernen
-    console.log('toolWindow.webContents.id = ', toolWindow.webContents.id);
+    // console.log('toolWindow.webContents.id = ', toolWindow.webContents.id);
     let options = {
         parent: toolWindow,
         modal: true,
@@ -227,7 +241,7 @@ function createSettingsWindow() { // TODO settings arg entfernen
             spellcheck: false,
             nativeWindowOpen: true,
             additionalArguments: [String(toolWindow.webContents.id)],
-            preload: 'E:\\Programmierung\\v3\\smartclip\\src\\settings-window\\preload.js',
+            preload: path.join(sourcePathDev, 'settings-window\\preload.js')
         },
         icon: iconPath
     };
@@ -265,7 +279,6 @@ function createSettingsWindow() { // TODO settings arg entfernen
 
     settingsWin.on('close', () => {
         settingsWin = null;
-        console.log('toolWindow=', toolWindow)
         toolWindow.webContents.send('focus-searchbar');
     });
 
@@ -273,7 +286,7 @@ function createSettingsWindow() { // TODO settings arg entfernen
 }
 
 ipcMain.on('open-settings', (_) => {
-    console.log('[Events] opensettings called!');
+    console.debug('[Events] opensettings called!');
     createSettingsWindow();
 });
 
@@ -285,7 +298,7 @@ ipcMain.on('close-settings', (_) => {
 
 ipcMain.on('log', async (event, someArgument) => {
     let loadedSettings = settingsManager.getSync('settings') || {};
-    console.log('loadedsettings from background.ts', loadedSettings);
+    console.log('[background.ts] loadedsettings from background.ts', loadedSettings);
     // console.log('settings=', global.settings);
     // console.log('modifying...');
     // global.settings['test'].test2 = 'test4'

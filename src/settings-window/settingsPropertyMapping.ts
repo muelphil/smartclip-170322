@@ -17,5 +17,6 @@ mapping[StringSettingProperty.name] = 'ScTextInput';
 mapping[RadioGroupSettingProperty.name] = 'ScRadioGroup';
 mapping[HotkeySettingProperty.name] = 'ScHotkey';
 mapping[HiddenSettingProperty.name] = 'ScHotkey';
+mapping[HiddenSettingProperty.name] = 'ScHotkey';
 
 export default mapping;

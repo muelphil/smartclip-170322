@@ -1,5 +1,5 @@
 <template>
-  <div v-if="error" class="error-toast-container" style="animation-duration: 100s;" ref="container" @animationend="onAnimationEnd">
+  <div v-if="error" class="error-toast-container" style="animation-duration: 5s;" ref="container" @animationend="onAnimationEnd">
     <div class="error-toast">ERROR #{{ errorCount }}: {{ error }}</div>
     <span class="open-logs clickable" @click="showLogFile">Show Log-File</span>
   </div>
@@ -40,7 +40,7 @@ export default defineComponent({
     }
 
     global.logger.addErrorListener((err) => {
-      console.log('Error happened!');
+      console.debug('[Error Notification] Error occurred: ', err);
       errorCount.value++;
       if ( error.value === null && win.isVisible()) {
         error.value = err.description;

@@ -1,1 +1,1 @@
-console.log('preload.js called!');
+console.debug('[Initialization] Tool window preload.js called');

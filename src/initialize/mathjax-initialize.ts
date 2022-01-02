@@ -1,7 +1,5 @@
 import {settings} from '@/plugins/settings';
 
-console.log(settings);
-
 (global as any).MathJax = {
     showProcessingMessages: false,
     tex: {

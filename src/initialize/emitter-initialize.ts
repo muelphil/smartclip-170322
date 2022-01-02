@@ -1,4 +1,3 @@
-import '@/initialize/paths';
 import { generateEventEmitter } from '@/services/eventemitter';
 window.emitter = generateEventEmitter();
 

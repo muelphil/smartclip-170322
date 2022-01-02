@@ -1,5 +1,5 @@
 import EchoView from '@/plugins/echo/EchoView.vue';
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 
 export const echo: Plugin = {
     id: 'echo',

@@ -1,6 +1,6 @@
-import { Action } from '@/plugins/plugins';
-import { EntryType } from '@/plugins/clip/EntryType';
-import { FilesEntry } from '@/classes/ClipboardEntry';
+import {Action} from '@/plugins/types';
+import {EntryType} from '@/plugins/clip/EntryType';
+import {FilesEntry} from '@/classes/ClipboardEntry';
 
 const {exec} = require('child_process');
 
@@ -61,7 +61,7 @@ const actions: Action[] = [
         description: 'Open with ...',
         performAction: (entry, done) => {
             let path;
-            if ( entry.type === EntryType.Files )
+            if (entry.type === EntryType.Files)
                 path = entry.data.uris[0];
             else
                 path = entry.data.src;
@@ -78,7 +78,7 @@ const actions: Action[] = [
         description: 'Open with default application',
         performAction: (entry, done) => {
             let path;
-            if ( entry.type === EntryType.Files )
+            if (entry.type === EntryType.Files)
                 path = entry.data.uris[0];
             else // EntryType.Image
                 path = entry.data.src;
@@ -89,4 +89,4 @@ const actions: Action[] = [
     },
 ];
 
-export { actions };
+export {actions};

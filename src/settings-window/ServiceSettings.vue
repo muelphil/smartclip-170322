@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import SettingsProperty from '@/components/settings/SettingProperty'
+    // import SettingsProperty from '@/components/settings/SettingProperty'
 
     export default {
         name: "ServiceSettings",
@@ -16,7 +16,7 @@
                 type: Array
             }
         },
-        components: {SettingsProperty}
+        components: {}
     }
 </script>
 

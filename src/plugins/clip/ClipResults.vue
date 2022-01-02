@@ -39,14 +39,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, onUnmounted, ref, Ref, watch } from 'vue';
+import {computed, defineComponent, getCurrentInstance, inject, onMounted, onUnmounted, ref, Ref, watch} from 'vue';
 import ClipboardEntryView from '@/components/entries/ClipboardEntryView.vue';
-import { basicAltListener, basicArrowListener, registerBasicScroll } from '@/plugins/helpers';
-import { ClipService } from '@/services/ClipService';
-import { ClipboardEntry } from '@/classes/ClipboardEntry';
+import {basicAltListener, basicArrowListener, registerBasicScroll} from '@/plugins/helpers';
+import {ClipService} from '@/services/ClipService';
+import {ClipboardEntry} from '@/classes/ClipboardEntry';
 import SCEventEmitter from '@/services/SCEventEmitter';
-import { ContextMenu as ContextMenuType } from '@/services/GlobalService';
-import { ActionInstance } from '@/plugins/plugins';
+import {ContextMenu as ContextMenuType} from '@/services/GlobalService';
+import {ActionInstance} from '@/plugins/types';
 import ContextMenu from '@/components/ContextMenu.vue';
 import ScEmptyState from "@/components/ScEmptyState.vue";
 
@@ -76,7 +76,7 @@ export default defineComponent({
     }
 
     const results: Ref<ClipboardEntry[]> = computed(() => {
-      if ( !props.query ) {
+      if (!props.query) {
         return clipService.clipboardEntries;
       } else {
         return clipService.search(props.query as string);
@@ -102,7 +102,7 @@ export default defineComponent({
 
 
     function submit({shiftKey}: KeyboardEvent) {
-      if ( shiftKey ) {
+      if (shiftKey) {
         const entry = clipService.clipboardEntries[selectedIndex.value];
         const actionService = window.services.actions;
         const actions = actionService.getActionsForEntry(entry as ClipboardEntry);

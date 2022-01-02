@@ -1,8 +1,6 @@
 import { watch } from 'vue';
 import SCEventEmitter from '@/services/SCEventEmitter';
 
-console.warn('eventemitter.ts');
-
 function generateEventEmitter(): SCEventEmitter {
 
     const eventEmitter = new SCEventEmitter();
@@ -18,7 +16,7 @@ function generateEventEmitter(): SCEventEmitter {
 
     function onDocumentKeydown(event: KeyboardEvent) {
         if ( event.altKey ) {
-            console.log('onDocumentKeydown, event=', event);
+            console.debug('[Events, Event Emitter] onDocumentKeydown, event=', event);
             if(event.code === 'Alt'){
                 // show alt options
                 if(!altStarted){

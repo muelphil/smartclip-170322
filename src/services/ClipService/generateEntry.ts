@@ -77,7 +77,7 @@ async function fromUrl(url: string): Promise<UrlEntry> {
                 siteName: ogSiteName,
                 iconUrl: iconUrl
             };
-        }).catch(err => console.info('Could not load open graph information for url', err));
+        }).catch(err => console.error('Could not load open graph information for url', err));
     });
 }
 

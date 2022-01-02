@@ -1,4 +1,6 @@
 import isDevelopment from '@/utils/regex/isDevelopment';
+// import {getSourcePathDev} from "@/utils/development";
+import path from "path";
 
 // console.log('app.getAppPath()=', app.getAppPath());
 // console.log('app.getPath(\'home\')=', app.getPath('home'));
@@ -21,10 +23,11 @@ import isDevelopment from '@/utils/regex/isDevelopment';
 const fs = require('fs');
 const {join, basename, dirname} = require('path');
 const {app} = require('electron').remote;
-
 const appPath = dirname(app.getPath('exe'));
+const sourcePathDev = path.join(dirname(app.getPath('exe')).replace(/(node_modules).+$/, ''), 'src');
+
 const resourcesPath = isDevelopment ?
-    'E:/Programmierung/smartclip/src/extraResources' :
+    join(sourcePathDev, 'extraResources') :
     join(appPath, 'resources');
 const serviceCache = app.getPath('userData'); // C:\Users\Philip\AppData\Roaming\smartclip
 const dotSmartclipPath = join(app.getPath('home'), isDevelopment ? '.smartclipdev' : '.smartclip');
@@ -32,11 +35,23 @@ const logPath = join(dotSmartclipPath, 'logs');
 const customThemesPath = join(dotSmartclipPath, 'themes');
 const favImageCache = join(dotSmartclipPath, 'images');
 const pluginsPath = join(dotSmartclipPath, 'plugins');
+const pluginsCachePath = join(dotSmartclipPath, 'pluginsCache');
 const baseThemesPath = join(resourcesPath, 'themes');
 const fallbackCssPath = join(baseThemesPath, 'dracula.css');
 const imageCache = join(serviceCache, 'cached_images');
 
-if ( !fs.existsSync(dotSmartclipPath) ) {
+function getPluginCachePath(pluginId: string, expectedSubDirs: string[] = []) {
+    const resultPath = join(pluginsCachePath, pluginId);
+    if (!fs.existsSync(resultPath)) {
+        fs.mkdirSync(resultPath);
+    }
+    expectedSubDirs.map(dirName => join(resultPath, dirName))
+        .filter(subDir => !fs.existsSync(subDir))
+        .forEach(fs.mkdirSync);
+    return resultPath;
+}
+
+if (!fs.existsSync(dotSmartclipPath)) {
     fs.mkdirSync(dotSmartclipPath);
 }
 
@@ -46,8 +61,8 @@ try {
     console.warn('[Initialization] Could not clear the image cache, will try again on next startup');
 }
 
-for (let dir of [dotSmartclipPath, customThemesPath, favImageCache, serviceCache, imageCache, pluginsPath, logPath]) {
-    if ( !fs.existsSync(dir) ) {
+for (let dir of [dotSmartclipPath, customThemesPath, favImageCache, serviceCache, imageCache, pluginsPath, pluginsCachePath, logPath]) {
+    if (!fs.existsSync(dir)) {
         console.debug(`[Initialization] Creating missing directory ${dir}`);
         fs.mkdirSync(dir);
     }
@@ -77,5 +92,6 @@ export {
     favImageCache,
     imageCache,
     pluginsPath,
-    logPath
+    logPath,
+    getPluginCachePath
 };

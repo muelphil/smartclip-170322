@@ -7,9 +7,9 @@
 const fixNedbForElectronRenderer = {
     apply(resolver) {
         resolver
-        // Plug in after the description file (package.json) has been
-        // identified for the import, because we'll depend on it for some of
-        // the logic below.
+            // Plug in after the description file (package.json) has been
+            // identified for the import, because we'll depend on it for some of
+            // the logic below.
             .getHook("beforeDescribed-relative")
             .tapAsync(
                 "FixNedbForElectronRenderer",
@@ -17,7 +17,7 @@ const fixNedbForElectronRenderer = {
                     // Detect that the import is from NeDB via the description file
                     // detect for the import. Calling `callback` with no parameters
                     // "bails", which proceeds with the normal resolution process.
-                    if ( !request.descriptionFileData.name === "nedb" ) {
+                    if (!request.descriptionFileData.name === "nedb") {
                         return callback();
                     }
 
@@ -67,6 +67,12 @@ module.exports = {
                 args[0].minify = false;
                 return args;
             });
+        config.rules = [
+            {
+                test: /.node$/,
+                loader: 'node-loader',
+            }
+        ];
     }, // TODO disable uglify
     runtimeCompiler: true, // for runtime Vue components with templates
     configureWebpack: {

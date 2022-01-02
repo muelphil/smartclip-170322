@@ -1,36 +1,33 @@
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 declare type ColumnResult = { title, tds, results, moreAvailable, loadMore };
 
 async function getTranslations(query: string): Promise<ColumnResult[]> {
-    if ( query ) {
-        let document: HTMLDocument, status: number;
-        try {
-            const response = await global.requestPageSource('https://dict.leo.org/englisch-deutsch/' + query);
-            document = response.document;
-            status = response.status;
-        } catch (err) {
-            throw {
-                code: 'noconnection',
-                message: 'could not load leo for query ' + query
-            };
+    return new Promise((resolve, reject) => {
+        if (!query) {
+            reject({code: 'emptyquery', message: 'queries that are empty will not be executed'});
+            return;
         }
-        if ( status === 200 ) { // HTTPStatus.OK
-            return documentToTranslations(document);
-        } else if ( status === 404 ) { // HTTPStatus.NOT_FOUND
-            const didYouMean = Array.from(document.querySelectorAll('.tf1.tbl-f td a'))
-                .map(e => e.textContent);
-            throw {code: 'notfound', additionalInformation: {didYouMean}};
-        } else {
-            throw {
-                code: 'unknown',
-                message: 'something went wrong, most likely during fetching the page, status=' + status
-            };
-        }
-
-    } else {
-        throw {code: 'emptyquery', message: 'queries that are empty will not be executed'};
-    }
+        const url = 'https://dict.leo.org/englisch-deutsch/' + query;
+        global.requestPageSource(url).then(({html, status}) => {
+            const document: Document = global.htmlToDocument(html);
+            if (status === 200) { // HTTPStatus.OK
+                resolve(documentToTranslations(document));
+            } else if (status === 404) { // HTTPStatus.NOT_FOUND
+                const didYouMean = Array.from(document.querySelectorAll('.tf1.tbl-f td a'))
+                    .map(e => e.textContent);
+                reject({code: 'notfound', additionalInformation: {didYouMean}});
+            } else {
+                reject({
+                    code: 'unknown',
+                    message: 'something went wrong, most likely during fetching the page, status=' + status
+                });
+            }
+        }).catch(err => reject({
+            code: 'noconnection',
+            message: 'could not load leo for query ' + query
+        }))
+    });
 }
 
 function partitionTds(collection) {
@@ -47,7 +44,7 @@ function validSection(innerText: string): boolean {
 
 function documentToTranslations(doc: Document, allSections = false): ColumnResult[] {
     let sections = Array.from(doc.querySelectorAll('.tblf1.tblf-alternate'));
-    if ( !allSections ) {
+    if (!allSections) {
         sections = sections.filter(table => {
             const title = (table.querySelector('thead h2') as HTMLElement).innerText;
             return validSection(title);
@@ -98,28 +95,28 @@ function buildHtmlFromExtractedData(extractedData: HTMLElement) {
     let endIndex = 0;
 
     function recursiveBuild(node: Node, ignoreForHighlighted = false) {
-        if ( isText(node) ) {
+        if (isText(node)) {
             const textContent = node.textContent;
-            if ( !startFound && !ignoreForHighlighted ) {
+            if (!startFound && !ignoreForHighlighted) {
                 startFound = checkStart(textContent); // check if this element is the start of what to highlight
-                if ( startFound )
+                if (startFound)
                     htmlBuffer.push('<span class="highlighted">');
             }
             htmlBuffer.push(node.textContent); // <span> must be pushed first if its the first to get highlighted
-            if ( startFound && !endFound ) {
+            if (startFound && !endFound) {
                 endFound = checkEnd(textContent); // check if this element is the end of what to highlight
             }
-            if ( startFound && !endFound && !ignoreForHighlighted ) {
+            if (startFound && !endFound && !ignoreForHighlighted) {
                 highlightedBuffer.push(textContent);
-                if ( !/^\s*$/.test(textContent) ) // if its only whitespace don't move the index pointing at the end
+                if (!/^\s*$/.test(textContent)) // if its only whitespace don't move the index pointing at the end
                     endIndex = htmlBuffer.length; // no -1, cause the end tag is inserted AFTER this one
             }
         } else {
             const nodeName = node.nodeName;
             const specialElements = ['I', 'SMALL', 'SUP'].indexOf(nodeName) !== -1; // means its <i>, <small> or <sup>
-            if ( specialElements ) {
+            if (specialElements) {
                 const firstChild = node.childNodes[0];
-                if ( isText(firstChild) && checkEnd(firstChild.textContent) )
+                if (isText(firstChild) && checkEnd(firstChild.textContent))
                     endFound = true;
                 htmlBuffer.push(`<${nodeName}>`);
                 for (let child of node.childNodes) {
@@ -163,4 +160,4 @@ function checkStart(str: string): boolean {
 }
 
 
-export { getTranslations };
+export {getTranslations};

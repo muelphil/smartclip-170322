@@ -1,5 +1,5 @@
 import MathView from "@/plugins/math/MathView.vue";
-import { Plugin } from '@/plugins/plugins';
+import { Plugin } from '@/plugins/types';
 import { mathSettings } from '@/plugins/math/settings';
 
 export const math: Plugin = {

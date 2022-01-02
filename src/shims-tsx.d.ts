@@ -1,12 +1,13 @@
-import Vue, { VNode } from 'vue';
-import { BaseSettings } from '@/plugins/basicSettings';
-import { ClipboardExtended } from '@/clipboard-extended/clipboard-extended';
-import { ActionService } from '@/services/ActionService';
-import { GlobalService } from '@/services/GlobalService';
+import Vue, {VNode} from 'vue';
+import {BaseSettings} from '@/plugins/basicSettings';
+import {ClipboardExtended} from '@/clipboard-extended/clipboard-extended';
+import {ActionService} from '@/services/ActionService';
+import {GlobalService} from '@/services/GlobalService';
 import MathService from '@/services/MathService';
-import { ClipService } from '@/services/ClipService';
+import {ClipService} from '@/services/ClipService';
 import SCEventEmitter from '@/services/SCEventEmitter';
-import { Error } from '@/classes/Logger';
+import {Error} from '@/classes/Logger';
+import {Plugin} from '@/plugins/types'
 
 declare global {
     namespace JSX {
@@ -44,9 +45,13 @@ declare global {
 
     namespace NodeJS {
         interface Global {
-            settings : object
+            settings: object
+            plugins: Plugin[]
+            pluginServices : {}
 
-            requestPageSource(url, timeout?: number): Promise<{ document: Document | null, status: number }>
+            requestPageSource(url, timeout?: number): Promise<{ html: string | null, status: number }>
+
+            htmlToDocument(html: string): Document
 
             openUrl(url: string): void,
 
