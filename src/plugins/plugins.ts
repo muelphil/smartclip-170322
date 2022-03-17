@@ -11,7 +11,8 @@ import {createPluginSettings} from "@/plugins/settings";
 import {computed, shallowReactive} from "vue";
 import {getPluginCachePath} from "@/initialize/paths";
 
-global.pluginServices = {};
+const pluginServices = shallowReactive({});
+global.pluginServices = pluginServices;
 
 const basePlugin = start;
 
@@ -65,5 +66,6 @@ const prefixPlugins = computed(() => {
 export {
     prefixPlugins,
     plugins,
-    basePlugin
+    basePlugin,
+    pluginServices
 };

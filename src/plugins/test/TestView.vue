@@ -1,5 +1,15 @@
 <template>
   <div>
+    TODOS StartView
+    <ol>
+      <li>Add Plugins</li>
+      <li>Add Actions: shutdown, hibernate, sleep, lock</li>
+      <li>Add Search and highlight</li>
+      <li>implement actions on click/ submit</li>
+      <li>icons for windows applications</li>
+      <li>switch to window</li>
+      <li>switch to open tab chrome</li>
+    </ol>
     [files={{ files }}]
     <ScFilesInput v-model="files" :options="['openDirectory', 'dontAddToRecent']"></ScFilesInput>
     <!--    <div>counter={{ counter }}</div>-->

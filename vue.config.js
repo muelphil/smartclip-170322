@@ -115,21 +115,21 @@ module.exports = {
                         ]
                     }
                 ],
-                icon: 'public/icons/favicon/clipboards.icon',
+                icon: 'public/clipboards.png',
                 nsis: {
                     oneClick: false,
                     allowToChangeInstallationDirectory: true,
                     deleteAppDataOnUninstall: true,
-                    installerIcon: 'public/icons/favicon/installerIcon.ico',
-                    uninstallerIcon: 'public/icons/favicon/uninstallerIcon.ico'
+                    // installerIcon: 'public/icons/favicon/installerIcon.ico',
+                    // uninstallerIcon: 'public/icons/favicon/uninstallerIcon.ico'
                 },
                 win: {
                     asar: false,
                     target: "nsis",
-                    icon: 'icons/favicon/clipboards.ico'
+                    // icon: 'icons/favicon/clipboards.ico'
                 },
                 linux: {
-                    icon: 'icons/favicon/clipboard.ico',
+                    // icon: 'icons/favicon/clipboard.ico',
                     target: 'deb'
                 },
                 directories: {

@@ -2,15 +2,6 @@ import isDevelopment from '@/utils/regex/isDevelopment';
 // import {getSourcePathDev} from "@/utils/development";
 import path from "path";
 
-// console.log('app.getAppPath()=', app.getAppPath());
-// console.log('app.getPath(\'home\')=', app.getPath('home'));
-// console.log('app.getPath(\'appData\')=', app.getPath('appData'));
-// console.log('app.getPath(\'userData\')=', app.getPath('userData'));
-// console.log('app.getPath(\'cache\')=', app.getPath('cache'));
-// console.log('app.getPath(\'temp\')=', app.getPath('temp'));
-// console.log('app.getPath(\'exe\')=', app.getPath('exe'));
-// console.log('app.getPath(\'module\')=', app.getPath('module'));
-
 // app.getAppPath()=		 	C:\Users\Philip\AppData\Local\Programs\smartclip\resources\app
 // app.getPath('home')=		    C:\Users\Philip
 // app.getPath('appData')=		C:\Users\Philip\AppData\Roaming
@@ -25,6 +16,15 @@ const {join, basename, dirname} = require('path');
 const {app} = require('electron').remote;
 const appPath = dirname(app.getPath('exe'));
 const sourcePathDev = path.join(dirname(app.getPath('exe')).replace(/(node_modules).+$/, ''), 'src');
+
+console.log('app.getAppPath()=', app.getAppPath());
+console.log('app.getPath(\'home\')=', app.getPath('home'));
+console.log('app.getPath(\'appData\')=', app.getPath('appData'));
+console.log('app.getPath(\'userData\')=', app.getPath('userData'));
+console.log('app.getPath(\'cache\')=', app.getPath('cache'));
+console.log('app.getPath(\'temp\')=', app.getPath('temp'));
+console.log('app.getPath(\'exe\')=', app.getPath('exe'));
+console.log('app.getPath(\'module\')=', app.getPath('module'));
 
 const resourcesPath = isDevelopment ?
     join(sourcePathDev, 'extraResources') :

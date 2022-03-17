@@ -1,13 +1,11 @@
 <template>
   <form @submit.prevent class="clipboard-container" @keydown="checkPluginPrefix($event)">
-    <button type="button" @click="click">click</button>
     <SearchBar
         v-model="query"
         :prefix="prefix"
         type="text"
         placeholder="Type to filter results..."
     ></SearchBar>
-
     <div class="plugin-view">
       <component
           :is="pluginComponent"
@@ -36,18 +34,12 @@ import {settings} from '@/plugins/settings';
 import {ClipService} from '@/services/ClipService';
 import SCEventEmitter from '@/services/SCEventEmitter';
 import {isDevelopment} from "@/utils/regex";
-import {basename, extname, join} from "path";
-import {Dirent, existsSync} from "fs";
 
 const {remote, ipcRenderer, dialog} = require('electron');
 const win = require('electron').remote.getCurrentWindow();
 const path = require('path');
 const fs = require('fs').promises;
 const env = require('electron').remote.getGlobal('process').env;
-
-
-const test = require('@bitdisaster/exe-icon-extractor');
-
 // const {width: screenWidth, height: screenHeight} = require('electron').remote.screen.getPrimaryDisplay().size;
 
 export default defineComponent({
@@ -57,8 +49,12 @@ export default defineComponent({
     const pluginView = ref(null);
     provide<SCEventEmitter>('emitter', window.emitter);
     provide<ClipService>('clipService', window.services.clipboard);
-
     const {query, pluginId, checkPluginPrefix, reset} = initializePlugins();
+
+    // const pluginReady = computed(() => {
+    //   const service = global.pluginServices[pluginId.value];
+    //   return Boolean(!service || !service.initialized || service.initialized.value);
+    // });
 
     win.on('hide', () => { // TODO this only will update the view after the window is focused again, showing a short flash of the previous view (plugin and query)
       if (!isDevelopment)

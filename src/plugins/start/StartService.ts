@@ -1,5 +1,5 @@
 import {exec} from "child_process";
-import {Ref, toRef, watch} from "vue";
+import {reactive, ref, Ref, toRef, watch} from "vue";
 import {Dirent, promises as fs, existsSync} from "fs";
 import {extname, join, basename, dirname, parse} from "path";
 import {remote} from "electron";
@@ -12,6 +12,8 @@ import child_process from "child_process";
 * */
 
 const app = require('electron').remote.app;
+const exeIconExtractor = require('@bitdisaster/exe-icon-extractor');
+
 
 // const fileIcon = require("extract-file-icon");
 
@@ -25,13 +27,14 @@ const command = `chcp 65001 > nul && powershell $notfirst=0;Write-Host "[" -NoNe
 export default class StartService {
 
     settings: any = null;
-    applications = [];
+    applications = reactive([]);
     missingApplications: Application[] = [];
     index: FileIndexEntry[] = [];
     dirsToIndex: Ref<string[]> = null;
     cachePath: string = null;
     iconPath: string = null;
     timesUsed = {}
+    public Ready: Promise<void> = null;
 
     /*
     * TODO on settings window close rebuild index if changed!
@@ -40,26 +43,25 @@ export default class StartService {
     constructor(settings, getPluginCachePath) {
         this.cachePath = getPluginCachePath('start', ['exeIcons']);
         this.iconPath = join(this.cachePath, 'exeIcons');
-        // console.log('[StartService]', fileIcon);
-        this.timesUsed = JSON.parse(localStorage.getItem('start.timesUsed')) || {}
-        this.initializeAppsAndActions();
         this.settings = settings;
         this.dirsToIndex = toRef(settings, 'dirsToIndex');
-        watch(this.dirsToIndex, () => {
-            console.log('settings.dirsToIndex have changed!');
-        })
-        this.rebuildIndex();
+        this.timesUsed = JSON.parse(localStorage.getItem('start.timesUsed')) || {}
+        this.Ready = this.initialize();
     }
 
-    initializeAppsAndActions() {
-        this.buildStartMenuApps().then(apps => {
-            console.log('apps length=', apps.length);
-            const appsSorted = apps
-                // TODO write custom sort function - this one makes 250 comparisons - way too many
-                .sort((a, b) => (this.timesUsed[b.exeName] || 0) - (this.timesUsed[a.exeName] || 0));
-            console.log('appsSorted=', appsSorted);
-            this.applications = appsSorted;
-        })
+    async initialize() {
+        // console.log('[StartService]', fileIcon);
+        await this.initializeAppsAndActions();
+        await this.buildIndex();
+        console.log('initialized!!!!!!!!')
+    }
+
+    async initializeAppsAndActions() {
+        const apps = await this.buildStartMenuApps();
+        // TODO write custom sort function - this one makes 250 comparisons - way too many
+        const appsSorted = apps.sort((a, b) => (this.timesUsed[b.exeName] || 0) - (this.timesUsed[a.exeName] || 0));
+        console.log('appsSorted=', appsSorted);
+        this.applications.push(...appsSorted);
         // TODO actions
     }
 
@@ -73,13 +75,19 @@ export default class StartService {
         this.applications.unshift(app);
     }
 
-    rebuildIndex() {
-        this.index = [];
-        this.buildIndex();
+    openFile(path: string) {
+
     }
 
-    buildIndex() {
-        this.settings.dirsToIndex.forEach(path => this.addDirectoryToIndex(path, this.index, 10, this.settings.ignore));
+    async rebuildIndex(): Promise<void> {
+        this.index = [];
+        await this.buildIndex();
+    }
+
+    async buildIndex() {
+        for (let path of this.settings.dirsToIndex) {
+            await this.addDirectoryToIndex(path, this.index, 10, this.settings.ignore);
+        }
     }
 
     async addDirectoryToIndex(pathToDir, index: FileIndexEntry[], maxDepth = 10, ignore: string[] = []) {
@@ -139,14 +147,42 @@ export default class StartService {
     //     }))
     // }
 
+    templateExeIcon: Buffer = null;
+
+    async getTemplateExeIcon(): Promise<Buffer> {
+        if (this.templateExeIcon === null) {
+            const dummyExePath = join(remote.process.env.TEMP, 'dummyExeForGetTemplateExeIcon.exe');
+            await fs.writeFile(dummyExePath, '')
+            this.templateExeIcon = (await app.getFileIcon(dummyExePath, {size: 'large'})).toPNG();
+        }
+        return this.templateExeIcon;
+    }
+
     async getIconForExe(pathToExe: string, name?: string) {
         pathToExe = pathToExe.replace(/\.(exe|bat|dll|ico),0$/, '.$1');
         if (!name) name = basename(pathToExe).replace(/\.(exe|dll|bat|ico|lnk)/, '');
-        const resultPath = join(this.iconPath, name + '.png');
+        let resultPath = join(this.iconPath, name);
+
         if (!existsSync(resultPath)) {
             const buffer: Electron.NativeImage = await app.getFileIcon(pathToExe, {size: 'large'});
+
+
             if (!buffer.isEmpty()) {
-                await fs.writeFile(resultPath, buffer.toPNG());
+                const png = buffer.toPNG();
+                const templateExeIcon = await this.getTemplateExeIcon();
+                // console.log('loaded icon for ', name, ' isTemplateImage=',);
+                if (Buffer.compare(templateExeIcon, png) === 0) {
+                    try {
+                        const icoBuffer = exeIconExtractor.extractIcon(pathToExe, "large");// === 0 implies the buffers are equal - therefore a template icon was loaded
+                        resultPath += '.ico'
+                        await fs.writeFile(resultPath, icoBuffer);
+                        return resultPath;
+                    } catch {/* dont do anything - just return the template icon png instead */
+                    }
+                }
+                resultPath += '.png'
+                await fs.writeFile(resultPath, png);
+
             } else {
                 throw 'icon could not be loaded for path ' + pathToExe;
             }
@@ -167,6 +203,7 @@ export default class StartService {
 
         for (let startMenuPath of startMenuPaths) {
             await recursivelyForFiles(startMenuPath, async file => {
+                // console.log('loading Link ', file.path);
                 if (file.name.endsWith('.lnk')) {
                     try {
                         const name = file.name.slice(0, -4);
@@ -179,12 +216,14 @@ export default class StartService {
                         const icon = await this.getIconForExe(path, name);
                         // const lastAccessed: Date = await this.getLastAccessedDate(link);
                         applications.push({name, exeName, path, icon});// lastAccessed});
+                        // console.log('pushed to apps, applength=', applications.length);
                     } catch (e) {
-                        return;
+                        console.error('Could not load app ', file.name);
                     }
                 }
             })
         }
+        // console.log('returning applications=', applications);
         return applications;
     }
 

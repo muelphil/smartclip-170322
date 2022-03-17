@@ -20,6 +20,9 @@ export type Plugin = {
     prefixDisplay: string,
     description: string,
     settingsPrototype?: Array<AbstractSettingProperty>,
-    service?: { new(settings: object, getPluginCachePath: (pluginId: string, expectedSubDirs?: string[]) => string) },
+    service?: {
+        new(settings: object, getPluginCachePath: (pluginId: string, expectedSubDirs?: string[]) => string),
+        Ready?: Promise<void>
+    },
     actions?: Action[]
 }

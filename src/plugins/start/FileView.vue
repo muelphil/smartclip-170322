@@ -18,16 +18,13 @@ export default defineComponent({
   name: "FileView",
   props: ['base', 'dir'],
   setup(props) {
-    // const splitPath = computed(() => props.dir.split('\\'));
-
-    // return {splitPath};
   }
 });
 </script>
 
 <style>
 mark {
-  background-color: yellow;
-  color: black;
+  background-color: rgba(229, 198, 92, 0.58);
+  color: white;
 }
 </style>

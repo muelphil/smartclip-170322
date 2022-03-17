@@ -1,4 +1,4 @@
-import { fallbackCssPath, themes } from '@/initialize/paths';
+import {fallbackCssPath, themes} from '@/initialize/paths';
 
 const fs = require('fs');
 const path = require('path');
@@ -18,10 +18,10 @@ function setTheme(theme: string) {
     const themePath = themes[theme];
     fs.readFile(themePath, 'utf-8',
         (err: (NodeJS.ErrnoException | null), cssContent: string) => {
-            if ( cssKey ) {
+            if (cssKey) {
                 win.webContents.removeInsertedCSS(cssKey);
             }
-            if ( err ) {
+            if (err) {
                 console.error(err);
                 win.webContents.insertCSS(fallbackCss).then(res => cssKey = res);
             } else {
@@ -42,10 +42,10 @@ function setStartup(launchOnStartup: boolean) {
     });
     autoLaunch.isEnabled()
         .then(function (isEnabled) {
-            if ( isEnabled && !launchOnStartup ) {
+            if (isEnabled && !launchOnStartup) {
                 autoLaunch.disable();
             }
-            if ( !isEnabled && launchOnStartup ) {
+            if (!isEnabled && launchOnStartup) {
                 autoLaunch.enable();
             }
         })
@@ -84,6 +84,7 @@ function setApplicationHotkey(hotkey: string[]) {
     let hotkeyFormatted = hotkey
         .join('+')
         .replace(/Ctrl/g, 'CommandOrControl')
+        .replace(/\s/g, 'Space')
         .replace(/Meta/g, 'Super');
     let success = globalShortcut.register(hotkeyFormatted, () => {
         win.show();
@@ -91,12 +92,12 @@ function setApplicationHotkey(hotkey: string[]) {
         remote.getCurrentWebContents()?.focus();
         setApplicationHotkeyListeners.forEach(listener => listener());
     });
-    if ( success ) {
+    if (success) {
         console.debug(`[Initialization] Successfully registered global shortcut "${hotkeyFormatted}" for opening smartclip`);
     } else {
         global.logger.error({
-            originator:'::setApplicationHotkey',
-            description:`Failed to register global shortcut "${hotkeyFormatted}" for opening smartclip`
+            originator: '::setApplicationHotkey',
+            description: `Failed to register global shortcut "${hotkeyFormatted}" for opening smartclip`
         })
     }
 }
@@ -121,13 +122,13 @@ function search(str: string, query: string): string {
             const charsMatch = currentQueryChar == currentStrChar;
 
             // falls zeichen übereinstimmen
-            if ( charsMatch ) {
-                if ( !sectionActive ) {
+            if (charsMatch) {
+                if (!sectionActive) {
                     sectionActive = true;
                     matchedSections.push([strIndex]);
                 }
                 // falls es letztes zeichen in query war
-                if ( queryIndex == query.length - 1 ) {
+                if (queryIndex == query.length - 1) {
                     matchedSections[matchedSections.length - 1].push(strIndex + 1);
                     // war der match erfolgreich!
                     // beende und gib
@@ -137,10 +138,10 @@ function search(str: string, query: string): string {
                     break;
                 }
             } else { // falls zeichen nicht übereinstimmen
-                if ( strIndex == str.length - 1 ) { // und es keine weiteren zeichen mehr gibt
+                if (strIndex == str.length - 1) { // und es keine weiteren zeichen mehr gibt
                     return null;
                 } else {
-                    if ( sectionActive ) {
+                    if (sectionActive) {
                         sectionActive = false;
                         matchedSections[matchedSections.length - 1].push(strIndex);
                     }

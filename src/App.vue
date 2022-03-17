@@ -1,12 +1,15 @@
 <template>
-<!--  <div :style="{'max-height': maxHeight}" class="app" ref="app">-->
-  <div class="app" ref="app">
-    <div v-if="loading" class="obscurer">Loading!</div>
-    <!--    <keep-alive>-->
-    <MainView v-if="!settingsActive"></MainView>
-    <!--     TODO remove <SettingsPanel v-else></SettingsPanel>-->
-    <!--    </keep-alive>-->
-    <error-notification-bar></error-notification-bar>
+  <div :style="{'max-height': maxHeight}" class="app" ref="app">
+    <!--  <div class="app" ref="app">-->
+    <template v-if="ready">
+      <div v-if="loading" class="obscurer">Loading!</div>
+      <!--    <keep-alive>-->
+      <!--    <MainView v-if="!settingsActive"></MainView>-->
+      <MainView v-if="ready"></MainView>
+      <!--     TODO remove <SettingsPanel v-else></SettingsPanel>-->
+      <!--    </keep-alive>-->
+      <error-notification-bar></error-notification-bar>
+    </template>
   </div>
 </template>
 
@@ -19,6 +22,7 @@ import './extraResources/themes/base.scss';
 import {settings} from '@/plugins/settings';
 import ErrorNotificationBar from '@/components/ErrorNotificationBar.vue';
 import settingsManager from "electron-settings";
+import {plugins, basePlugin, pluginServices} from '@/plugins/plugins';
 // import './extraResources/themes/dracula.css';
 
 const remote = require('electron').remote;
@@ -29,6 +33,13 @@ export default defineComponent({
   name: 'App',
   components: {ErrorNotificationBar, MainView, ContextMenu},
   setup() {
+
+    const ready = ref(false);
+    Promise.all(
+        Object.values(pluginServices)
+            .map(e => e['Ready'])
+            .filter(e => e)
+    ).then(() => ready.value = true);
 
     let loadedSettings = settingsManager.getSync('settings') || {};
     console.debug('[Initialization] App.vue loadedSettings=', loadedSettings);
@@ -78,7 +89,8 @@ export default defineComponent({
       settingsActive: toRef(window.services.global, 'settingsActive'),
       loading: toRef(window.services.global, 'loading'),
       maxHeight,
-      app
+      app,
+      ready
       // contextMenu
     };
   }

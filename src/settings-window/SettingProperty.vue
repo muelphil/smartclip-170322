@@ -1,6 +1,5 @@
 <template>
   <div v-if="property.type !== 'hidden'">
-    v-model=[{{modelValue}}]
     <component
         :is="componentType"
         :modelValue="modelValue"

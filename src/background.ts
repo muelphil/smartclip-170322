@@ -6,13 +6,12 @@ import settingsManager from "electron-settings";
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import {dirname, join} from "path";
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 const {BrowserWindow: AcrylicBrowserWindow} = require("electron-acrylic-window");
 app.allowRendererProcessReuse = false;
 const path = require('path');
 const appPath = dirname(app.getPath('exe'));
 const sourcePathDev = path.join(dirname(app.getPath('exe')).replace(/(node_modules).+$/, ''), 'src');
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -144,7 +143,9 @@ async function createToolWindow() {
 
     toolWindow.on('blur', function (_event: any) {
         console.debug('[Events] toolWindow::blur')
-        if (!isDevelopment && settingsWin === null)
+        if (
+            // !isDevelopment &&
+            toolWindow && settingsWin === null)
             toolWindow!.hide();
     });
 

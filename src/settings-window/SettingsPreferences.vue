@@ -20,7 +20,6 @@
               :model-value="settings[plugin.id][property.identifier]"
               @update:modelValue="setSetting(plugin.id, property.identifier, $event)"
           ></setting-property>
-          v-model[pref]=[{{ settings[plugin.id][property.identifier] }}]
         </div>
       </template>
     </div>
